@@ -78,10 +78,7 @@ app.put("/api/movies/:id", (req, res) => {
     res.status(400).send("Your request is missing the movie id");
   if (
     req.body.id === undefined ||
-    !req.body.title ||
-    !req.body.director ||
-    !req.body.metascore ||
-    !req.body.stars
+    !req.body.title
   ) {
     res
       .status(422)
@@ -89,11 +86,14 @@ app.put("/api/movies/:id", (req, res) => {
   }
   movies = movies.map(movie => {
     if (`${movie.id}` === req.params.id) {
-      return req.body;
+      return {
+        ...movie,
+        title: req.body.title
+      }
     }
     return movie;
   });
-  res.status(200).send(req.body);
+  res.status(200).send(movies.find(movie => movie.id === req.body.id));
 });
 
 app.delete("/api/movies/:id", (req, res) => {
